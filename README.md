@@ -1,2 +1,2 @@
 # useful-code
-Useful code for a variety of tasks.
+This repository contains code snippets in various degrees of completeness for a variety of tasks. To contribute code please create a new R markdown document by copying the Template.Rmd file and following the instructions therein to make the code most comprehensible and accessible to others. Also, please give your files descriptive names (that contain no spaces unless you want to see Anita die in tears) so the gist of the code is clear from the file name. One task per file!
