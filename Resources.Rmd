@@ -1,0 +1,99 @@
+---
+title: "Resources"
+author: "Anita Restrepo"
+date: "8/12/2021"
+output: html_document
+---
+
+A couple resources for coding and stats. Definitely a work in progress, feel free to add any and all useful links/titles/authors.  
+  
+# General R Resources 
+  
+[R for Data Science by Hadley Wickham](https://r4ds.had.co.nz/)  
+Asolutely stellar overview of the most useful elements in the tidyverse tailored for data science. Spans everything from manipulating data to basic text analysis to plotting with ggplot. A great resource for daily coding.  
+  
+[Datanovia website (Alboukadel Kassambara)](https://www.datanovia.com/en/)  
+Contains really detailed and easy-to-follow step-by-step guides for common analyses including assumption checks and plotting results.  
+  
+[ggplot2 reference guide](https://ggplot2.tidyverse.org/)  
+The official reference guide for ggplot2 with all the documentation and, more importantly, thorough discussion of all possible options with examples.  
+  
+[R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
+Great reference for the more specific and uncommon details of R Markdown.  
+  
+[Happy Git with R by Jenny Bryan](http://happygitwithr.com)  
+Has some good stuff for learning to use github with R. A bit too detailed and in-depth for our needs I think but still a good resource to have!  
+  
+# Resources About Regression/ANOVA  
+  
+[Repeated Measures and Mixed Models](https://m-clark.github.io/docs/mixedModels/anovamixed.html)  
+A great discussion, with examples, of the parallels between regression and ANOVA, specifically focused on repeated measures analysis.  
+  
+[PLotting Interaction Effects for Regression](https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_interactions.html)  
+Great vignette on how to plot 2- and 3-way interactions for regression using the sjPlot package.  
+  
+# HLM Resources  
+  
+These are mainly from Karen Smith.  
+  
+[Nice visualization to help understand](http://mfviz.com/hierarchical-models/)
+  
+## Tutorials  
+[Longitudinal Analysis with lme](https://rpsychologist.com/r-guide-longitudinal-lme-lmer)  
+  
+[Linear mixed effects models in R](https://pagepiccinini.com/r-course/lesson-6-part-1-linear-mixed-effects-models/)  
+  
+[Visualizing Crossed Random Effects](https://errickson.net/stats-notes/vizrandomeffects.html)
+  
+[lme4 Tutorial](nsvandeschoot.com/tutorials/lme4/)  
+  
+[Another lme4 Tutorial](http://www.rensenieuwenhuis.nl/r-sessions-16-multilevel-model-specification-lme4/)  
+  
+[Binomial GLMM for binary outcomes](https://data.library.virginia.edu/getting-started-with-binomial-generalized-linear-mixed-models/)  
+  
+## Articles  
+[A paper on HLM](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3131138/)  
+  
+## Books  
+[Applied Longitudinal Analysis Book by Singer & Willett](https://www.amazon.com/Applied-Longitudinal-Data-Analysis-Occurrence/dp/0195152964)  
+Highly recommended by Karen and has [accompanying R code](https://stats.idre.ucla.edu/other/examples/alda/)
+  
+[Raudenbush's Book on HLM](https://www.amazon.com/Hierarchical-Linear-Models-Applications-Quantitative/dp/076191904X)  
+  
+[Multilevel Analysis by Joop Hox](https://www.amazon.com/Multilevel-Analysis-Quantitative-Methodology-Joop/dp/1138121363/ref=sr_1_1?crid=1VJNDMC84Y5Z4&dchild=1&keywords=multilevel+analysis+techniques+and+applications+hox&qid=1632942870&s=books&sprefix=multilevel+analysis+%2Cstripbooks%2C190&sr=1-1)  
+I originally read the first edition so this one should be better and also has more authors on it.  
+  
+## Visualizing and Reporting Results  
+[Options for Tables on Markdown](https://www.anthonyschmidt.co/post/2020-09-06-table-options-mlm/)  
+Goes through a couple different packages for making tables specifically for HLMs.  
+ 
+[Visualizing and Getting Model Info](https://strengejacke.github.io/sjPlot/)  
+Absolutely fantastic for visualizing effects and essential for probing interactions.  
+  
+# Resources About Power  
+  
+[Really complete tutorial for power analysis using simr for MLMs](https://humburg.github.io/Power-Analysis/simr_power_analysis.html)  
+Also useful is the simR article *SIMR: an R package for power analysis of generalized linear mixed models by simulation*  
+  
+[Examples for power analysis with simr](https://cran.r-project.org/web/packages/simr/vignettes/examples.html)
+  
+# Data Simulation  
+  
+[From Probabilities to Log-Odds for Simulation](https://rpubs.com/clayford/741841)  
+Useful for simulating data for a logistic regression, particularly a logistic MLM.  
+  
+    
+# jsPsych Resources  
+  
+[jsPsych Website from Creators](https://www.jspsych.org/)  
+Good place to start, contains basic tutorials and explanations of what it is and how it works.  
+  
+[Moving Research Online Tutorials](https://www.movingresearchonline.info/)  
+Originally a workshop run in 2020 to help researchers move research online during the pandemic, links to the videos of the webinars that walk through creating and running experiments using jsPsych. A good second step after looking through their website (and maybe getting familiar with javascript and html).  
+  
+[Kyoung's Tutorial for Embedding jsPsych into Qualtrics](https://kywch.github.io/jsPsych-in-Qualtrics/)  
+INVALUABLE resource for integrating jspsych tasks into qualtrics. Kyoung is an ex-postdoc in Marc Berman's lab and has, in the past, been responsive to email inquiries but is NOT going to teach from scratch so do your research before contacting him!  
+  
+- Small annotation to his tutorial: if embedding multiple jsPsych tasks into the same qualtrics survey, make sure that when the display stage and display stage background are being removed you include a hashtag in front of the name when calling them. In other words, it should read `jQuery('#display_stage').remove()` instead of `jQuery('display_stage').remove()`. I mention this because both are used in the tutorial in different sections.  
+  
+

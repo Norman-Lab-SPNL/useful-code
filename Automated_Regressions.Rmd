@@ -1,0 +1,126 @@
+---
+title: "Automated Regressions "
+author: "Anita Restrepo"
+date: "8/12/2021"
+output: html_document
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+  
+# Method 1  
+  
+This code is meant to automate the process of running regressions and pulling out relevant stats into tables to then be able to move them out of R easily.  
+  
+Run multiple regressions on various variables of interest within a dataframe and return a results table in csv format
+```{r}
+## create a list that includes the column numbers for the relevant variables to subsequently put into regression loops
+Variable_Column_numbers <- c(1, 2, 3, 4, 5)
+
+## input these variables into a loop that runs a regression of choice on each of the variables
+# lapply applies my self-defined function onto each item in the list
+# the function in this case is a glm (logistic regression)
+# each item in my list of variables (defined as x) is being included as a predictor in the models by selecting the relevant column from my dataframe
+my_regressions <- lapply(Variable_Column_numbers, function(x) glm(Dependent_Variable ~ dataframe[,x] + covariate1 + covariate2, family = binomial, data = dataframe))
+
+## pull out the information that will go into the tables of results using multiple loops that iterate over the output of the previous regression loop
+# lapply and sapply do the same thing (apply function to list) but sapply returns a vector while lapply returns a list
+# outputs rounded to 2 digits
+# outputs of regressions are being indexed according to value of interest (e.g. 2nd item in coefficients)
+# here getting unstandardized regression coefficients, confidence intervals and p values
+my_summaries <- lapply(my_regressions, summary)
+my_coefs <- sapply(my_regressions, function(x) round(exp(x$coefficients[2]), digits = 2))
+my_CI_1 <- sapply(my_regressions, function(x) round(exp(confint(x)[2, 1]), digits =2)) 
+my_CI_2 <- sapply(my_regressions, function(x) round(exp(confint(x)[2, 2]), digits = 2))
+my_ps <- sapply(my_summaries, function(x) round(x$coefficients[2, 4], digits=2))
+
+## combine all relevant information from whole loop of regressions and save into one dataframe
+# generates table with columns for relevant information (B, CIs, p values) and each row is for one variable of interest (here as predictor in regression models)
+# saves table as csv file in a subfolder (Tables) within the current directory
+Result_table_name <- data.frame(my_coefs, my_CI_1, my_CI_2, my_ps, row.names = NULL)
+colnames(Result_table_name) <- c("B", "2.5% CI", "97.5% CI", "p value")
+rownames(Result_table_name) <- c("Predictor 1", "Predictor 2", "Predictor 3")
+write.csv(Result_table_name, file = "Tables/Result_table_name.csv")
+```
+  
+Update 2/23/22: The above code doesn't capitalize on the tidyverse and is much dirtier than one would like so here is some nicer, tidyer code to achieve similar results. It won't produce the same tables but is more easily modified to suit more flexible needs.  
+  
+# Method 2  
+  
+For this code below, the function was made to simultaneously loop through two sets of variables to include a corresponding pair of variables as predictors in the same model. Can be modified to only loop through one set of variables or more than two.  
+  
+Variable explanations:  
+- dat: the dataframe where the data lives  
+- items: one set of predictors (i.e. column names) to loop through  
+- intensities: a corresponding set of predictors to loop through (must be the same length as items)  
+- questionnaire: a single outcome variable for the regression models. Needs to be inputted into the function in the form of a string (e.g. "CESD_Total")  
+```{r}
+reg_by_item <- function(dat, items, intensities, questionnaire) {
+  regs <- data.frame() # create empty dataframe to populate inside for loop
+  for (i in 1:length(items)) { # loop through the number of elements in the "items" vector
+    red_df <- dat %>% select(questionnaire, items[i], intensities[i]) # create a reduced dataframe (red_df) that only contains our variables of interest
+    red_df$endorsal <- ifelse(red_df[,2] > 1, 1, 0) # optional and specific to this data (creating new variable)
+    DV <- questionnaire # for inclusion in final dataframe
+    mod <- summary(lm(red_df[,1] ~ red_df[,4]*red_df[,3])) # run the model and call summary to extract stats
+    reg <- data.frame(DV = c(DV, DV, DV, DV), # include the DV as many times as number of coefficients in your model output
+                      coefficient = c("Intercept", items[i], intensities[i], "interaction"), # label for each coefficient
+                      mod$coefficients, row.names = NULL) # extract betas, standard errors, t-vals and p-vals
+    regs <- rbind(regs, reg) # populate the output dataframe
+  }
+return(regs)  
+}
+
+# vector to pass into function for the "items" argument
+bleep <- c("ACES_1", "ACES_2", "ACES_3", "ACES_4", "ACES_5", "ACES_6", "ACES_7", "ACES_8", "ACES_9", "ACES_10")
+# vector to pass into function for the "intensities" argument
+bloop <- c("ACES_I_1", "ACES_I_2", "ACES_I_3", "ACES_I_4", "ACES_I_5", "ACES_I_6", "ACES_I_7", "ACES_I_8", "ACES_I_9", "ACES_I_10")
+
+# create three dataframes containing the outputs for the regressions for three deffierent DVs
+Lon_CTQ <- reg_by_item(df, bleep, bloop, "Lon_Total")
+CESD_CTQ <- reg_by_item(df, bleep, bloop, "CESD_Total")
+PSS_CTQ <- reg_by_item(df, bleep, bloop, "PSS_Total")
+
+```
+  
+# Method 3  
+This method takes a vector of the names of predictors and runs regressions (in this case HLMs) with all possible combinations of said predictors. Two separate functions below for including 2 and 3 predictors in the model. Can expand to 4+. Outputs a list with chi-square tests (specific to HLMs, can modify to `summary` for `lm`) for each model as a separate item.     
+  
+Only kink is that the outputs come out without the relevant predictor names so need to use the last bit of code to cross-reference the models.  
+```{r}
+qs <- c("CESD_score_centered", "Rosenberg_score_centered", "LSAS_score_centered", "BAI_score_centered")
+
+reg_by_2 <- function(dat, predictors) {
+  combs_2 <- combn(predictors, 2)
+  anovas_2 <- list()# create empty list to populate inside for loop
+  for (i in 1:ncol(combs_2)) { # loop through the number of columns in the combinations list
+    #IV1 <- combs_2[1,i]
+    #IV2 <- combs_2[2,i]
+    mod <- lmer(cyber_total ~ cyberball_condition*cyber_session*UCLA_score_centered + dat[[combs_2[1,i]]] + dat[[combs_2[2,i]]] + (1 + cyber_session|Subject), data = dat, REML = F) # run the model
+    stars <- Anova(mod, type = 3)
+    anovas_2[[i]] <- stars
+  }
+  return(anovas_2)
+}
+
+reg_by_3 <- function(dat, predictors) {
+  combs_3 <- combn(predictors, 3)
+  anovas_3 <- list() # create empty list to populate inside for loop
+  for (i in 1:ncol(combs_3)) { # loop through the number of columns in the combinations list
+    IV1 <- combs_3[1,i]
+    IV2 <- combs_3[2,i]
+    IV3 <- combs_3[3,i]
+    mod <- lmer(cyber_total ~ cyberball_condition*cyber_session*UCLA_score_centered + dat[[IV1]] + dat[[IV2]] + dat[[IV3]] + (1 + cyber_session|Subject), data = dat, REML = F) # run the model
+    stars <- Anova(mod, type = 3)
+    anovas_3[[i]] <- stars
+  }
+  return(anovas_3)
+}
+
+regs_w_2 <- reg_by_2(df_post_cyber, qs)
+regs_w_3 <- reg_by_3(df_post_cyber, qs)
+# use these to cross-reference with output lists to see what predictors are where
+combn(qs, 2)
+combn(qs, 3)
+```
+
+  
