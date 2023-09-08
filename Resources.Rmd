@@ -29,8 +29,15 @@ Has some good stuff for learning to use github with R. A bit too detailed and in
 [Repeated Measures and Mixed Models](https://m-clark.github.io/docs/mixedModels/anovamixed.html)  
 A great discussion, with examples, of the parallels between regression and ANOVA, specifically focused on repeated measures analysis.  
   
-[PLotting Interaction Effects for Regression](https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_interactions.html)  
+[Plotting Interaction Effects for Regression](https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_interactions.html)  
 Great vignette on how to plot 2- and 3-way interactions for regression using the sjPlot package.  
+  
+[Anova – Type I/II/III SS explained](https://md.psych.bio.uni-goettingen.de/mv/unit/lm_cat/lm_cat_unbal_ss_explained.html)  
+Great resource breaking down the different Anova sums of squares (SS) methods -- alt link in case it's broken: https://mcfromnz.wordpress.com/2011/03/02/anova-type-iiiiii-ss-explained/  
+  
+[Serious Stats Blog on Anova SS Types](https://seriousstats.wordpress.com/2020/05/13/type-ii-and-type-iii-sums-of-squares-what-should-i-choose/)  
+Slightly more complex resource for the same thing as above.  
+
   
 # HLM Resources  
   
