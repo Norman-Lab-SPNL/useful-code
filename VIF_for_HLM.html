@@ -12,7 +12,7 @@
 <meta name="author" content="Anita Restrepo" />
 
 
-<title>Template</title>
+<title>VIF for HLM</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -362,24 +362,41 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Template</h1>
+<h1 class="title toc-ignore">VIF for HLM</h1>
 <h4 class="author">Anita Restrepo</h4>
 <h4 class="date">Sep 07, 2023</h4>
 
 </div>
 
 
-<p>This is the template markdown file for any new code you want to
-include in this repository. Make sure to give it an informative and
-concise title when you duplicate it and change the title and author name
-in the YAML (above). The date will autopopulate.</p>
-<p>Libraries required:</p>
-<pre class="r"><code>library()
-library()</code></pre>
-<p>Include a detailed description of the purpose of the code as well as
-detailed annotations explaining each line of code. Also add any external
-references if relevant and any other comments. The more info the
-better!</p>
+<p>Karen Smith provided this function to use to test for problematic
+levels of multicollinearity in HLM models. For reasons I don’t
+understand one cannot use normal VIF functions (e.g. the in-built
+<code>vif()</code> function from the car package) for HLMs.</p>
+<p>Function code:</p>
+<pre class="r"><code>vif_mer &lt;- function (fit) {
+  ## adapted from rms::vif
+  
+  v &lt;- vcov(fit)
+  nam &lt;- names(fixef(fit))
+  
+  ## exclude intercepts
+  ns &lt;- sum(1 * (nam == &quot;Intercept&quot; | nam == &quot;(Intercept)&quot;))
+  if (ns &gt; 0) {
+    v &lt;- v[-(1:ns), -(1:ns), drop = FALSE]
+    nam &lt;- nam[-(1:ns)]
+  }
+  
+  d &lt;- diag(v)^0.5
+  v &lt;- diag(solve(v/(d %o% d)))
+  names(v) &lt;- nam
+  v
+}</code></pre>
+<p>Use of the function:</p>
+<pre class="r"><code>library(lme4)
+# sample model
+mod &lt;- lmer(outcome ~ predictor + (1|Subject), data = data, REML = FALSE)
+vif_mer(mod)</code></pre>
 
 
 

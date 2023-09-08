@@ -1,0 +1,46 @@
+---
+title: "VIF for HLM"
+author: "Anita Restrepo"
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output: html_document
+---
+  
+  
+Karen Smith provided this function to use to test for problematic levels of multicollinearity in HLM models. For reasons I don't understand one cannot use normal VIF functions (e.g. the in-built `vif()` function from the car package) for HLMs.  
+  
+```{r include = FALSE}
+# ensures none of the code chunks are actually run (because non-functional
+# code snippets will not allow for knitting)
+knitr::opts_chunk$set(eval = FALSE)
+```
+  
+Function code:  
+```{r}
+vif_mer <- function (fit) {
+  ## adapted from rms::vif
+  
+  v <- vcov(fit)
+  nam <- names(fixef(fit))
+  
+  ## exclude intercepts
+  ns <- sum(1 * (nam == "Intercept" | nam == "(Intercept)"))
+  if (ns > 0) {
+    v <- v[-(1:ns), -(1:ns), drop = FALSE]
+    nam <- nam[-(1:ns)]
+  }
+  
+  d <- diag(v)^0.5
+  v <- diag(solve(v/(d %o% d)))
+  names(v) <- nam
+  v
+}
+```
+
+Use of the function:  
+```{r}
+library(lme4)
+# sample model
+mod <- lmer(outcome ~ predictor + (1|Subject), data = data, REML = FALSE)
+vif_mer(mod)
+```
+  
