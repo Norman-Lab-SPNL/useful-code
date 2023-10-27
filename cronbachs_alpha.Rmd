@@ -1,0 +1,38 @@
+---
+title: "Cronbach's Alpha (Internal Consistency)"
+author: "Anita Restrepo"
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output: html_document
+---
+  
+  
+This is code for calculating the internal consistency of a questionnaire using Cronbach's alpha.    
+  
+```{r include = FALSE}
+# ensures none of the code chunks are actually run (because non-functional
+# code snippets will not allow for knitting)
+knitr::opts_chunk$set(eval = FALSE)
+```
+  
+Libraries required:  
+```{r}
+library(tidyverse)
+library(ltm)
+```
+
+
+To calculate Cronbach's alpha you need to feed a dataframe into the `cronbach.alpha` function of the ltm package that contains the individual item-level responses for each subject (one subject per row). Any items that require it should be reverse-scored.  
+```{r}
+alpha <- example_dataframe %>%
+  # select all the individual items of the questionnaire
+  select(UCLA_1_rev:UCLA_20_rev, # items that had to be reverse-scored
+         UCLA_2:UCLA_4, UCLA_7, UCLA_8, UCLA_11:UCLA_14, UCLA_17, UCLA_18) %>%
+  # calculate cronbach's alpha in the sample
+  cronbach.alpha(.)
+# save the rounded alpha value as an R object to reference in Markdown when writing up
+(alpha <- round(alpha$alpha, digits = 2))
+```
+  
+See [this link](https://www.statology.org/cronbachs-alpha-in-r/) for a nice tutorial
+  
+  
