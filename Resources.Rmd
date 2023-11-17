@@ -38,6 +38,9 @@ Great resource breaking down the different Anova sums of squares (SS) methods --
 [Serious Stats Blog on Anova SS Types](https://seriousstats.wordpress.com/2020/05/13/type-ii-and-type-iii-sums-of-squares-what-should-i-choose/)  
 Slightly more complex resource for the same thing as above.  
 
+# Resources about Mediation Analysis  
+[Tutorial on Mediation in R](https://library.virginia.edu/data/articles/introduction-to-mediation-analysis)  
+Courtesy of Cynthia Gaspard :)  
   
 # HLM Resources  
   
