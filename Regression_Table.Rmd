@@ -1,0 +1,74 @@
+---
+title: "Regression Table"
+author: "Anita Restrepo"
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output: html_document
+---
+  
+  
+Code for outputting a table with betas, SEs, and type-III Anova results for each predictor in a multilevel model.   
+  
+```{r include = FALSE}
+# ensures none of the code chunks are actually run (because non-functional
+# code snippets will not allow for knitting)
+knitr::opts_chunk$set(eval = FALSE)
+```
+  
+Libraries required:  
+```{r}
+library(tidyverse)
+library(kableExtra)
+```
+
+  
+The first part of the code makes a dataframe that has the desired columns and rows to make the table (so not the code for making the actual table).      
+```{r}
+sigs <- total_mod_chis %>%
+  mutate(Predictor = c("Intercept", "Condition", "Cyberball Round",
+                       "Loneliness", "Condition * Round",
+                       "Condition * Loneliness", 
+                       "Loneliness * Round", "Condition * Round * Loneliness")) %>%
+  relocate(Predictor)
+rownames(sigs) <- NULL
+# insert blank rows for contrasts
+sigs <- insertRows(sigs, c(3, 7, 9, 12), new = "")
+## deal with bug in Berry package
+sigs <- sigs[-c(13),]
+
+betas <- total_mod_betas %>%
+  mutate(Predictor = c("Intercept", "Condition", "", "Cyberball Round",
+                       "Loneliness", "Condition * Round", "",
+                       "Condition * Loneliness", "", 
+                       "Loneliness * Round", "Condition * Round * Loneliness", ""),
+         Contrast = c("", "Inclusion", "Neutral", "",
+                       "", "Inclusion", "Neutral",
+                       "Inclusion", "Neutral",
+                       "", "Inclusion",
+                       "Neutral")) %>%
+  relocate(Predictor, Contrast)
+rownames(betas) <- NULL
+
+tab1 <- cbind(select(betas, -Predictor), select(sigs, -Predictor))
+rownames(tab1) <- NULL
+
+```
+  
+The second part of the code is for making the table itself. I pipe in the final dataframe I made above that has all the rows and columns the way I would want for them to appear in the table. 
+  
+```{r}
+kable(tab1, col.names = c("Predictor", "$\\beta$", "SE", "$\\chi^2$", "Df", "p-value"), align = c("l", "c", "c", "c", "c",  "c")) %>% 
+  kable_classic() %>%
+  pack_rows(index = c("Intercept" = 1, "Condition" = 2, 
+                      "Cyberball Round" = 1,
+                       "Loneliness" = 1, "Condition * Round" = 2,
+                       "Condition * Loneliness" = 2, 
+                       "Loneliness * Round" = 1, 
+                      "Condition * Round * Loneliness" = 2)) %>%
+  footnote(general = "Loneliness is grand-mean centered. Reference category for Cyberball condition is exclusion. Higher scores on rejection questionnaires indicate greater feelings of rejection.")
+```
+  
+Further reading: the [kableExtra package](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html).
+  
+  
+  
+  
