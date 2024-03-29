@@ -60,6 +60,11 @@ These are mainly from Karen Smith.
 [Another lme4 Tutorial](http://www.rensenieuwenhuis.nl/r-sessions-16-multilevel-model-specification-lme4/)  
   
 [Binomial GLMM for binary outcomes](https://data.library.virginia.edu/getting-started-with-binomial-generalized-linear-mixed-models/)  
+
+## Interpreting Interactions in Logistic MLMs  
+[DECIPHERING INTERACTIONS IN LOGISTIC REGRESSION](https://stats.oarc.ucla.edu/stata/seminars/deciphering-interactions-in-logistic-regression/)  
+  
+[Estimating and testing GLMs with `emmeans`](https://www.r-bloggers.com/2020/04/estimating-and-testing-glms-with-emmeans/)  
   
 ## Articles  
 [A paper on HLM](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3131138/)  
